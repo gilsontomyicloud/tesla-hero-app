@@ -16,7 +16,7 @@ class VehiclesController extends Controller
     {
         return VehicleResource::collection(
             Vehicle::where('status',1)->orderBy('created_at', 'desc')
-            ->paginate(2)
+            ->get()
         );
     }
 

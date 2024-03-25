@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class VehicleResource extends JsonResource
+class VariantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,12 +17,22 @@ class VehicleResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'attributes' => [
+                'vehicle_id' => $this->vehicle_id,
+                'color_id' => $this->color_id,
+                'trim_id' => $this->trim_id,
                 'name' => $this->name,
                 'slug' => $this->slug,
-                'mainImage' => $this->main_image,
-                'thumbImage' => $this->thumb_image,
-                'shortDescription' => $this->short_description,
-                'fullDescription' => $this->description,
+                'description' => $this->description,
+                'warranty_details' => $this->warranty_details,
+                'price' => $this->price,
+                'image' => $this->image,
+                'range' => $this->range,
+                'top_speed' => $this->top_speed,
+                'acceleration' => $this->acceleration,
+                'autopilot_available' => $this->autopilot_available,
+                'wheel_size' => $this->wheel_size,
+                'wheel_type' => $this->wheel_type,
+                'seat_capacity' => $this->seat_capacity,
                 'status' => $this->status,
                 'created_at' => $this->created_at,
                 'creatupdated_ated_at' => $this->updated_at,
@@ -33,7 +42,7 @@ class VehicleResource extends JsonResource
                     'user_id' => $this->user->id,
                     'user_name' => $this->user->name,
                 ],
-                'variants' => VariantResource::collection($this->variants)
+                'images' =>[]
             ]
         ];
     }

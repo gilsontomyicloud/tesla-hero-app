@@ -9,11 +9,13 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id', 'name', 'slug', 'short_description', 'description', 'thumb_image', 'main_image', 'status'
-    ];
+    protected $guarded = ['id'];
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function variants(){
+        return $this->hasMany(Variant::class);
     }
 }
