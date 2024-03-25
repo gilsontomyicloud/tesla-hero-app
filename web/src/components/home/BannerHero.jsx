@@ -41,7 +41,7 @@ const BannerHero = () => {
             Find the Tesla for You
           </p>
           <h1 className="mt-10 font-palanquin text-5xl max-sm:text-[60px] max-sm:leading-[60px] font-bold max-2xl:text-[40px]">
-            <span className="pr-10 xl:bg-white xl:whitespace-nowrap">
+            <span className="pr-10 xl:bg-black text-white xl:whitespace-nowrap">
               Model Y Starting at $36,490
             </span>
             <br />

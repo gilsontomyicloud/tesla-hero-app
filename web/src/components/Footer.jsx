@@ -4,6 +4,7 @@ import {
   instagram,
   twitter,
 } from "../assets/icons";
+import { useStateContext } from "../contexts/ContextProvider";
 
 const socialMedia = [
   { src: facebook, alt: "facebook logo" },
@@ -12,15 +13,7 @@ const socialMedia = [
 ];
 
 const footerLinks = [
-  {
-    title: "Vehicles",
-    links: [
-      { name: "Model X", link: "/vehicles/1" },
-      { name: "Model Y", link: "/vehicles/2" },
-      { name: "Model S", link: "/vehicles/3" },
-      { name: "Cybertruck", link: "/vehicles/4" },
-    ],
-  },
+  
   {
     title: "Help",
     links: [
@@ -38,6 +31,8 @@ const footerLinks = [
 ];
 
 const Footer = () => {
+
+const {vehicleModels} = useStateContext();
   return (
     <footer className="max-container">
       <div className="flex justify-between items-start gap-20 flex-wrap max-lg:flex-col">
@@ -64,6 +59,26 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-1 justify-between flex-wrap gap-20 lg:gap-10">
+          {vehicleModels && (
+            <div className="text-white font-montserrat">
+              <h4 className="mb-6 text-2xl font-medium leading-normal">
+                Vehicles
+              </h4>
+              <ul className="text-white-400">
+                {vehicleModels.map((models) => (
+                  <li className="mt-3 text-base leading-normal" key={models.id}>
+                    <a
+                      className="hover:text-tesla-red"
+                      href={`/vehicles?slug=${models.attributes.slug}`}
+                    >
+                      {models.attributes.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {footerLinks.map((section) => (
             <div className="text-white font-montserrat" key={section.title}>
               <h4 className="mb-6 text-2xl font-medium leading-normal">

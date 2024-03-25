@@ -1,8 +1,13 @@
+import FilterList from "../components/vehicles/FilterList";
+
+
 const Vehicles = () => {
   return (
     <>
-      Vehciles
+      <section className="xl:padding-l wide:padding-r padding-b">
+        <FilterList />
+      </section>
     </>
-  )
-}
-export default Vehicles
+  );
+};
+export default Vehicles;

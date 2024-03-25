@@ -1,66 +1,44 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { NavLink } from "react-router-dom";
 import { headerLogo } from "../assets/images";
 import { Disclosure, Popover, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import {
-  modelYThumb,
-  modelXThumb,
-  modelSThumb,
-  cyberTruckThumb,
-} from "../assets/images/models";
+import { useStateContext } from '../contexts/ContextProvider';
+import axiosClient from '../axios-client';
 
 
 const navigation = [
   { name: "Home", to: "/", current: true },
-  // { name: "Vehicles", to: "/vehicles"},
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const vehicles = [
-  {
-    id: "1",
-    name: "Model X",
-    description:
-      "Model S Plaid has the quickest acceleration of any vehicle in production. Updated battery architecture for all Model S trims enables back-to-back track runs without performance degradation.",
-    href: "/vehicles/1",
-    image: modelXThumb,
-  },
-  {
-    id: "2",
-    name: "Model Y",
-    description:
-      "Plenty of range for every kind of drive. From daily driving to family road trips, charging Model Y is fast, convenient and accessible anywhere there’s electricity.",
-    href: "/vehicles/2",
-    image: modelYThumb,
-  },
-  {
-    id: "3",
-    name: "Model S",
-    description:
-      "Model S Plaid has the quickest acceleration of any vehicle in production. Updated battery architecture for all Model S trims enables back-to-back track runs without performance degradation.",
-    href: "/vehicles/3",
-    image: modelSThumb,
-  },
-
-  {
-    id: "4",
-    name: "Cybertruck",
-    description:
-      "Durable and rugged enough to go anywhere. tackle anything with electronically adaptive air suspension that offers 305 mm of travel and 406 mm of clearance.",
-    href: "/vehicles/4",
-    image: cyberTruckThumb,
-  },
-  
-];
-
 const Nav = () => {
+  
+  const { vehicleModels, setVehicleModels } = useStateContext();
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await axiosClient.get("vehicles");
+        setVehicleModels(response.data.data);
+      } catch (err) {
+        if (err.response) {
+          console.log(err.response.data);
+          console.log(err.response.message);
+          console.log(err.response.headers);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
+      }
+    };
+
+    fetchVehicles();
+  }, []);
   return (
-    <Disclosure as="nav" className="bg-transparent">
+    <Disclosure as="nav" className="bg-transparent py-5">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -91,12 +69,9 @@ const Nav = () => {
                       <NavLink
                         key={item.name}
                         to={item.to}
-                        className={({ isActive }) =>
+                        className={() =>
                           classNames(
-                            isActive
-                              ? " text-gray-950 decoration-black"
-                              : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                            "px-5 py-2 text-sm font-medium text-gray-950"
+                            "hover:bg-gray-700 hover:text-white px-4 py-2.5 text-sm font-medium leading-6 text-gray-950"
                           )
                         }
                       >
@@ -106,7 +81,7 @@ const Nav = () => {
                   </div>
                 </div>
                 <Popover className="hidden sm:ml-5 sm:mt-1 sm:block relative">
-                  <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+                  <Popover.Button className="inline-flex hover:bg-gray-700 hover:text-white px-4 py-1 items-center gap-x-1 text-sm font-semibold leading-7 text-gray-900">
                     <span>Vehicles</span>
                     <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
                   </Popover.Button>
@@ -123,28 +98,31 @@ const Nav = () => {
                     <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4">
                       <div className="w-screen max-w-md flex-auto h-96 overflow-y-auto rounded-3xl bg-black text-sm leading-6 shadow-lg ring-1 ring-gray-900/5 ">
                         <div className="p-4">
-                          {vehicles.map((item) => (
+                          {vehicleModels.map((item) => (
                             <div
                               key={item.id}
                               className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
                             >
                               <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
                                 <img
-                                  src={item.image}
+                                  src={
+                                    import.meta.env.VITE_API_MODEL_IMAGE_PATH +
+                                    item.attributes.thumbImage
+                                  }
                                   className="h-8 w-8"
-                                  alt={item.name}
+                                  alt={item.attributes.name}
                                 />
                               </div>
                               <div>
                                 <a
-                                  href={item.href}
+                                  href={`/vehicles?slug=${item.attributes.slug}`}
                                   className="font-semibold text-gray-300"
                                 >
-                                  {item.name}
+                                  {item.attributes.name}
                                   <span className="absolute inset-0" />
                                 </a>
                                 <p className="mt-1 text-gray-300">
-                                  {item.description}
+                                  {item.attributes.shortDescription}
                                 </p>
                               </div>
                             </div>
@@ -180,18 +158,15 @@ const Nav = () => {
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
+          <Disclosure.Panel className="sm:hidden bg-gray-950">
+            <div className="space-y-1 px-2 pb-2 pt-2">
               {navigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}
                   as="a"
                   href={item.to}
                   className={classNames(
-                    item.current
-                      ? " text-gray-950 decoration-black"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block px-3 py-2 text-base font-medium text-gray-950"
+                    "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 text-base font-medium"
                   )}
                   aria-current={item.current ? "page" : undefined}
                 >
@@ -199,6 +174,66 @@ const Nav = () => {
                 </Disclosure.Button>
               ))}
             </div>
+            <Popover className="sm:hidden space-y-1 px-5 pb-5 pt-2 relative ">
+              <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-700 hover:text-white ">
+                <span>Vehicles</span>
+                <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+              </Popover.Button>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0 translate-y-1"
+                enterTo="opacity-100 translate-y-0"
+                leave="transition ease-in duration-150"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 translate-y-1"
+              >
+                <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4">
+                  <div className="w-screen max-w-md flex-auto h-96 overflow-y-auto rounded-3xl bg-black text-sm leading-6 shadow-lg ring-1 ring-gray-900/5 ">
+                    <div className="p-4">
+                      {vehicleModels.map((item) => (
+                        <div
+                          key={item.id}
+                          className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
+                        >
+                          <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                            <img
+                              src={
+                                import.meta.env.VITE_API_MODEL_IMAGE_PATH +
+                                item.attributes.thumbImage
+                              }
+                              className="h-8 w-8"
+                              alt={item.attributes.name}
+                            />
+                          </div>
+                          <div>
+                            <a
+                              href={`/vehicles?slug=${item.attributes.slug}`}
+                              className="font-semibold text-gray-300"
+                            >
+                              {item.attributes.name}
+                              <span className="absolute inset-0" />
+                            </a>
+                            <p className="mt-1 text-gray-300">
+                              {item.attributes.shortDescription}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-1  bg-black">
+                      <a
+                        href="/vehicles"
+                        className="flex items-center justify-center gap-x-2.5 p-3 font-semibold text-gray-300 hover:bg-gray-100"
+                      >
+                        View All Models
+                      </a>
+                    </div>
+                  </div>
+                </Popover.Panel>
+              </Transition>
+            </Popover>
           </Disclosure.Panel>
         </>
       )}
