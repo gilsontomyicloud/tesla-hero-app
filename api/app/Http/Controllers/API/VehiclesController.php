@@ -67,5 +67,16 @@ class VehiclesController extends Controller
         return new VariantResource($variant);
     }
 
+    /**
+     * Display a listing of the resource.
+     */
+    public function fetchAllColors()
+    {
+        return VehicleResource::collection(
+            Vehicle::where('status', 1)->orderBy('created_at', 'desc')
+            ->get()
+        );
+    }
+
     
 }

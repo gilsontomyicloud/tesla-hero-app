@@ -12,11 +12,12 @@ class VariantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        
         return VariantResource::collection(
             Variant::where('status', 1)->orderBy('created_at', 'desc')
-                ->paginate(2)
+                ->paginate(6)
         );
     }
 

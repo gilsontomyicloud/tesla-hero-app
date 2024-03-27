@@ -1,52 +1,16 @@
 
-import { Fragment, useEffect, useState } from "react";
-import { Dialog, Disclosure, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-
-  FunnelIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/react/20/solid";
+import { useEffect, useState } from "react";
 import VehicleCards from "./VehicleCards";
 import axiosClient from '../../axios-client';
 import Pagination from './Pagination';
+import MobileFilters from "./MobileFilters";
 
 
-const subCategories = [
-  { name: "Model S", href: "#" },
-  { name: "Model 3", href: "#" },
-  { name: "Model X", href: "#" },
-  { name: "Model Y", href: "#" },
-];
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
-    ],
-  },
-  {
-    id: "trim",
-    name: "Trims",
-    options: [
-      { value: "1", label: "Model S Plaid", checked: false },
-      { value: "2", label: "Model S", checked: false },
-      { value: "3", label: "Long Range All-Wheel Drive", checked: true },
-      {value: "4",label: "Model 3 Rear-Wheel Drive",checked: false,},
-      { value: "6", label: "Model X", checked: false },
-      { value: "7", label: "Performance All-Wheel Drive", checked: false },
-      { value: "8", label: "Long Range All-Wheel Drive", checked: false },
-      { value: "9", label: "Model Y Rear-Wheel Drive", checked: false },
-    ],
-  },
-];
+import { Fragment  } from "react";
+import { Dialog, Disclosure, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon, MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
+import { useStateContext } from "../../contexts/ContextProvider";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -54,155 +18,119 @@ function classNames(...classes) {
 
 const FilterList = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-
-  const [loading, setLoading] = useState(false);
+  const [colors, setColors] = useState([]);
+  const [trims, setTrims] = useState([]);
+  const [selectedModels, setSelectedModels] = useState([]);
+  const [fileredVariants, setFilteredVariants] = useState([]);
   const [variants, setVariants] = useState([]);
   const [meta, setMeta] = useState({});
+  const [urlSlug, setUrlSlug] = useState('');
+  const queryParameters = new URLSearchParams(window.location.search);
+  
 
+  const [loading, setLoading] = useState(false);
+  const { vehicleModels } = useStateContext();
+
+  /* Get list of all vehicle variants available */
   const getVehicleVariants = (url) => {
     url = url || "/variants";
     setLoading(true);
-    axiosClient.get(url).then(({ data }) => {
-      
-      setVariants(data.data);
-      setMeta(data.meta);
-      setLoading(false);
-    });
+    axiosClient
+      .get(url)
+      .then(({ data }) => {
+        setVariants(data.data);
+        setFilteredVariants(data.data);
+        setMeta(data.meta);
+        setLoading(false);
+        setUrlSlug(queryParameters.get("slug"));
+        // debugger;
+      })
+      .catch((err) => alert(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  /* Get all colors from DB to list in filters */
+  const getColors = async () => {
+    setLoading(true);
+
+    await axiosClient
+      .get("/get-colors")
+      .then(({ data }) => {
+        setColors(data.data);
+      })
+      .catch((err) => alert(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  /* Get all trims from DB to list in filters */
+  const getTrims = async () => {
+    setLoading(true);
+
+    await axiosClient
+      .get("/get-trims")
+      .then(({ data }) => {
+        setTrims(data.data);
+      })
+      .catch((err) => alert(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  /* Add user selected models to selectedModels */
+  const addModel = (model) => {
+    if (!selectedModels.includes(model)) {
+      setSelectedModels((prev) => [...prev, parseInt(model)]);
+    }
+  };
+
+  /* Remove user selected models to selectedModels */
+  const removeModel = (model) => {
+    if (selectedModels.includes(model)) {
+      const removedList = selectedModels.filter((item) => item !== model);
+      setSelectedModels(removedList);
+    }
   };
 
   useEffect(() => {
+    
+    if (selectedModels.length === 0) {
+      setFilteredVariants(variants);
+    } else {
+      
+      setFilteredVariants(
+        variants.filter((item) =>
+          selectedModels.includes(item.attributes.vehicle_id)
+        )
+      );
+    }
+    
+  }, [selectedModels, variants]);
+
+  useEffect(() => {
     getVehicleVariants();
+    getColors();
+    getTrims();
   }, []);
 
   const onPageClick = (link) => {
     getVehicleVariants(link.url);
   };
+const slug = queryParameters.get("slug") ? queryParameters.get("slug") : "";
+  
   return (
     <div className="bg-white">
       <div>
-        {/* Mobile filter dialog */}
-        <Transition.Root show={mobileFiltersOpen} as={Fragment}>
-          <Dialog
-            as="div"
-            className="relative z-40 lg:hidden"
-            onClose={setMobileFiltersOpen}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-black bg-opacity-25" />
-            </Transition.Child>
-
-            <div className="fixed inset-0 z-40 flex">
-              <Transition.Child
-                as={Fragment}
-                enter="transition ease-in-out duration-300 transform"
-                enterFrom="translate-x-full"
-                enterTo="translate-x-0"
-                leave="transition ease-in-out duration-300 transform"
-                leaveFrom="translate-x-0"
-                leaveTo="translate-x-full"
-              >
-                <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
-                  <div className="flex items-center justify-between px-4">
-                    <h2 className="text-lg font-medium text-gray-900">
-                      Filters
-                    </h2>
-                    <button
-                      type="button"
-                      className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
-                      onClick={() => setMobileFiltersOpen(false)}
-                    >
-                      <span className="sr-only">Close menu</span>
-                      <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
-                  </div>
-
-                  {/* Filters */}
-                  <form className="mt-4 border-t border-gray-200">
-                    <h3 className="sr-only">Models</h3>
-                    <ul
-                      role="list"
-                      className="px-2 py-3 font-medium text-gray-900"
-                    >
-                      {subCategories.map((category) => (
-                        <li key={category.name}>
-                          <a href={category.href} className="block px-2 py-3">
-                            {category.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {filters.map((section) => (
-                      <Disclosure
-                        as="div"
-                        key={section.id}
-                        className="border-t border-gray-200 px-4 py-6"
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className="-mx-2 -my-3 flow-root">
-                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                <span className="font-medium text-gray-900">
-                                  {section.name}
-                                </span>
-                                <span className="ml-6 flex items-center">
-                                  {open ? (
-                                    <MinusIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  ) : (
-                                    <PlusIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  )}
-                                </span>
-                              </Disclosure.Button>
-                            </h3>
-                            <Disclosure.Panel className="pt-6">
-                              <div className="space-y-6">
-                                {section.options.map((option, optionIdx) => (
-                                  <div
-                                    key={option.value}
-                                    className="flex items-center"
-                                  >
-                                    <input
-                                      id={`filter-mobile-${section.id}-${optionIdx}`}
-                                      name={`${section.id}[]`}
-                                      defaultValue={option.value}
-                                      type="checkbox"
-                                      defaultChecked={option.checked}
-                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    />
-                                    <label
-                                      htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                      className="ml-3 min-w-0 flex-1 text-gray-500"
-                                    >
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))}
-                  </form>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </Dialog>
-        </Transition.Root>
+        <MobileFilters
+          mobileFiltersOpen={mobileFiltersOpen}
+          setMobileFiltersOpen={setMobileFiltersOpen}
+          colors={colors}
+          trims={trims}
+        />
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
@@ -224,84 +152,168 @@ const FilterList = () => {
 
           <section aria-labelledby="products-heading" className="pb-24 pt-6">
             <h2 id="products-heading" className="sr-only">
-              Products
+              Vehicles
             </h2>
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
               <form className="hidden lg:block">
-                <h3 className="sr-only">Categories</h3>
-                <ul
-                  role="list"
-                  className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
-                >
-                  {subCategories.map((category) => (
-                    <li key={category.name}>
-                      <a href={category.href}>{category.name}</a>
-                    </li>
-                  ))}
-                </ul>
-
-                {filters.map((section) => (
-                  <Disclosure
-                    as="div"
-                    key={section.id}
-                    className="border-b border-gray-200 py-6"
-                  >
-                    {({ open }) => (
-                      <>
-                        <h3 className="-my-3 flow-root">
-                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                            <span className="font-medium text-gray-900">
-                              {section.name}
-                            </span>
-                            <span className="ml-6 flex items-center">
-                              {open ? (
-                                <MinusIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              ) : (
-                                <PlusIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              )}
-                            </span>
-                          </Disclosure.Button>
-                        </h3>
-                        <Disclosure.Panel className="pt-6">
-                          <div className="space-y-4">
-                            {section.options.map((option, optionIdx) => (
-                              <div
-                                key={option.value}
-                                className="flex items-center"
+                <Disclosure as="div" className="border-b border-gray-200 py-6">
+                  {({ open }) => (
+                    <>
+                      <h3 className="-my-3 flow-root">
+                        <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            Models
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {open ? (
+                              <MinusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <PlusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                        </Disclosure.Button>
+                      </h3>
+                      <Disclosure.Panel className="pt-6">
+                        <div className="space-y-4">
+                          {vehicleModels.map((option, optionIdx) => (
+                            <div key={option.id} className="flex items-center">
+                              <input
+                                id={`filter-models-${optionIdx}`}
+                                name={`models[]`}
+                                defaultValue={option.id}
+                                type="checkbox"
+                                defaultChecked={
+                                  option.attributes.slug === slug && true
+                                }
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                onClick={() => {
+                                  if (selectedModels.includes(option.id)) {
+                                    removeModel(option.id);
+                                  } else {
+                                    addModel(option.id);
+                                  }
+                                }}
+                              />
+                              <label
+                                htmlFor={`filter-models-${optionIdx}`}
+                                className="ml-3 text-sm text-gray-600"
                               >
-                                <input
-                                  id={`filter-${section.id}-${optionIdx}`}
-                                  name={`${section.id}[]`}
-                                  defaultValue={option.value}
-                                  type="checkbox"
-                                  defaultChecked={option.checked}
-                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                />
-                                <label
-                                  htmlFor={`filter-${section.id}-${optionIdx}`}
-                                  className="ml-3 text-sm text-gray-600"
-                                >
-                                  {option.label}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        </Disclosure.Panel>
-                      </>
-                    )}
-                  </Disclosure>
-                ))}
+                                {option.attributes.name}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
+                <Disclosure as="div" className="border-b border-gray-200 py-6">
+                  {({ open }) => (
+                    <>
+                      <h3 className="-my-3 flow-root">
+                        <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            Colors
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {open ? (
+                              <MinusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <PlusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                        </Disclosure.Button>
+                      </h3>
+                      <Disclosure.Panel className="pt-6">
+                        <div className="space-y-4">
+                          {colors.map((option, optionIdx) => (
+                            <div key={option.id} className="flex items-center">
+                              <input
+                                id={`filter-colors-${optionIdx}`}
+                                name={`colors[]`}
+                                defaultValue={option.id}
+                                type="checkbox"
+                                defaultChecked={false}
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label
+                                htmlFor={`filter-colors-${optionIdx}`}
+                                className="ml-3 text-sm text-gray-600"
+                              >
+                                {option.attributes.name}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
+                <Disclosure as="div" className="border-b border-gray-200 py-6">
+                  {({ open }) => (
+                    <>
+                      <h3 className="-my-3 flow-root">
+                        <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            Trims
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {open ? (
+                              <MinusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <PlusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                        </Disclosure.Button>
+                      </h3>
+                      <Disclosure.Panel className="pt-6">
+                        <div className="space-y-4">
+                          {trims.map((option, optionIdx) => (
+                            <div key={option.id} className="flex items-center">
+                              <input
+                                id={`filter-trims-${optionIdx}`}
+                                name={`trims[]`}
+                                defaultValue={option.id}
+                                type="checkbox"
+                                defaultChecked={false}
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label
+                                htmlFor={`filter-trims-${optionIdx}`}
+                                className="ml-3 text-sm text-gray-600"
+                              >
+                                {option.attributes.name}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
               </form>
 
-              {/* Product grid */}
+              {/* Vehicles grid */}
               <div className="lg:col-span-3">
                 {loading && (
                   <div className="py-8 text-center text-lg">Loading...</div>
@@ -310,18 +322,18 @@ const FilterList = () => {
                   <div className="bg-white">
                     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-15 lg:max-w-7xl lg:px-2">
                       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
-                        {variants.length === 0 && (
+                        {fileredVariants.length === 0 && (
                           <div className="py-8 text-center text-lg">
                             No vehicles available to list.
                           </div>
                         )}
-                        {variants.length > 0 && (
-                          <VehicleCards variants={variants} />
+                        {fileredVariants.length > 0 && (
+                          <VehicleCards variants={fileredVariants} />
                         )}
                       </div>
                     </div>
-                    {variants.length > 0 && (
-                      <Pagination meta={meta} onPageClick onPageClick={onPageClick}/>
+                    {fileredVariants.length > 0 && (
+                      <Pagination meta={meta} onPageClick={onPageClick} />
                     )}
                   </div>
                 )}

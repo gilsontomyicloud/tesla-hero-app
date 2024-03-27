@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ColorsController;
+use App\Http\Controllers\API\TrimsController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VehiclesController;
 use Illuminate\Http\Request;
@@ -28,4 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
 /* API routes which are accessible to public */
 Route::apiResource('/vehicles',VehiclesController::class);
 Route::apiResource('/variants',VariantController::class);
+Route::get('/get-colors',[ColorsController::class, 'getAllColors']);
+Route::get('/get-trims',[TrimsController::class, 'getAllTrims']);
+Route::apiResource('/variants',VariantController::class);
+
+
 Route::post('/login', [AuthController::class,'login']);

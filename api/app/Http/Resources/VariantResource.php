@@ -15,12 +15,12 @@ class VariantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (string)$this->id,
+            'id' => $this->id,
             'attributes' => [
+                'name' => $this->name,
                 'vehicle_id' => $this->vehicle_id,
                 'color_id' => $this->color_id,
                 'trim_id' => $this->trim_id,
-                'name' => $this->name,
                 'slug' => $this->slug,
                 'description' => $this->description,
                 'warranty_details' => $this->warranty_details,
@@ -35,7 +35,7 @@ class VariantResource extends JsonResource
                 'seat_capacity' => $this->seat_capacity,
                 'status' => $this->status,
                 'created_at' => $this->created_at,
-                'creatupdated_ated_at' => $this->updated_at,
+                'updated_at' => $this->updated_at,
             ],
             'relationships' => [
                 'user' => [
