@@ -1,62 +1,37 @@
-const products = [
-  {
-    id: 1,
-    name: 'Earthen Bottle',
-    href: '#',
-    price: '$48',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg',
-    imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
-  },
-  {
-    id: 2,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-    imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
-  },
-  {
-    id: 3,
-    name: 'Focus Paper Refill',
-    href: '#',
-    price: '$89',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg',
-    imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
-  },
-  {
-    id: 4,
-    name: 'Machined Mechanical Pencil',
-    href: '#',
-    price: '$35',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg',
-    imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
-  },
-  // More products...
-]
-
-const VehicleCards = () => {
+const VehicleCards = ({ variants }) => {
   return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-15 lg:max-w-7xl lg:px-2">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
-          {products.map((product) => (
-            <a key={product.id} href={product.href} className="group">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                <img
-                  src={product.imageSrc}
-                  alt={product.imageAlt}
-                  className="h-full w-full object-cover object-center group-hover:opacity-75"
-                />
-              </div>
-              <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">
-                {product.price}
-              </p>
-            </a>
-          ))}
+    <>
+      {variants.length === 0 && (
+        <div className="py-8 text-center text-lg">
+          No vehicles available to list.
         </div>
-      </div>
-    </div>
+      )}
+      {variants.length > 0 &&
+        variants.map((variant) => (
+          <a
+            key={variant.id}
+            href={`/vehicles/${variant.attributes.slug}`}
+            className="group shadow-lg p-5"
+          >
+            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img
+                src={
+                  import.meta.env.VITE_API_VARIANT_IMAGE_PATH +
+                  variant.attributes.image
+                }
+                alt={variant.attributes.name}
+                className="h-full w-full object-cover object-center group-hover:opacity-75"
+              />
+            </div>
+            <h3 className="mt-4 text-sm text-gray-700">
+              {variant.attributes.name}
+            </h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">
+              {`$ ${variant.attributes.price}`}
+            </p>
+          </a>
+        ))}
+    </>
   );
-}
+};
 export default VehicleCards;

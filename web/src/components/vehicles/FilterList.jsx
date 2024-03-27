@@ -1,5 +1,5 @@
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -9,7 +9,8 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import VehicleCards from "./VehicleCards";
-import Pagination from "./Pagination";
+import axiosClient from '../../axios-client';
+import Pagination from './Pagination';
 
 
 const subCategories = [
@@ -54,6 +55,28 @@ function classNames(...classes) {
 const FilterList = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [variants, setVariants] = useState([]);
+  const [meta, setMeta] = useState({});
+
+  const getVehicleVariants = (url) => {
+    url = url || "/variants";
+    setLoading(true);
+    axiosClient.get(url).then(({ data }) => {
+      
+      setVariants(data.data);
+      setMeta(data.meta);
+      setLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    getVehicleVariants();
+  }, []);
+
+  const onPageClick = (link) => {
+    getVehicleVariants(link.url);
+  };
   return (
     <div className="bg-white">
       <div>
@@ -188,7 +211,6 @@ const FilterList = () => {
             </h1>
 
             <div className="flex items-center">
-              
               <button
                 type="button"
                 className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
@@ -281,8 +303,28 @@ const FilterList = () => {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <VehicleCards />
-                <Pagination />
+                {loading && (
+                  <div className="py-8 text-center text-lg">Loading...</div>
+                )}
+                {!loading && (
+                  <div className="bg-white">
+                    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-15 lg:max-w-7xl lg:px-2">
+                      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
+                        {variants.length === 0 && (
+                          <div className="py-8 text-center text-lg">
+                            No vehicles available to list.
+                          </div>
+                        )}
+                        {variants.length > 0 && (
+                          <VehicleCards variants={variants} />
+                        )}
+                      </div>
+                    </div>
+                    {variants.length > 0 && (
+                      <Pagination meta={meta} onPageClick onPageClick={onPageClick}/>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </section>
