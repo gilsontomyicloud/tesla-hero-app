@@ -17,7 +17,7 @@ class VariantController extends Controller
         
         return VariantResource::collection(
             Variant::where('status', 1)->orderBy('created_at', 'desc')
-                ->paginate(6)
+                ->get()
         );
     }
 
