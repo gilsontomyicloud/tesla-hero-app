@@ -48,11 +48,11 @@ A Laravel - React Full Stack Development project with Tailwind CSS support for U
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project.
-
 
 * [![React][React.js]][React-url]
 * [![Laravel][Laravel.com]][Laravel-url]
+* [Tailwind CSS]
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -61,7 +61,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these steps
 
 ### Prerequisites
 
@@ -95,12 +95,25 @@ To get a local copy up and running follow these simple example steps.
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone git@github.com:gilsontomyicloud/tesla-hero-app.git
    ```
-3. Install NPM packages
+2. First we will start with installation of Laravel backend API project with all required dependencies. Make sure you have MYSQL, PHP, Composer up and running in your local machine
+3. Navigate to `api` folder in your project directory and enter the following commands in your terminal(make sure you are in api folder)
+   ```sh
+   composer install
+   cp .env.example .env
+   ```
+4. Once the dependencies are installed create a database in your MYSQL server and have the credenetials available with you to insert it into the .env file created using the above step
+5. Open .env file in api folder and enter the following with your MYSQL server details DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD and save it
+6. Now in your terminal run the following commands to generate key, migrate table structures, some seed table values and symnlink creatiion
+   ```sh
+   php artisan key:generate
+   php artisan migrate --seed
+   php artisan storage:link
+   ```
+2. Install NPM packages
    ```sh
    npm install
    ```
