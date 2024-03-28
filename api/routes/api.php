@@ -24,12 +24,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/vehciles/variants/create', [VehiclesController::class, 'storeVariant']);
+    Route::post('/vehciles/variants/create', [VariantController::class, 'storeVariant']);
+    Route::post('/vehciles/variants/images/create', [VariantController::class, 'storeVariantImages']);
 });
 
 /* API routes which are accessible to public */
 Route::apiResource('/vehicles',VehiclesController::class);
 Route::apiResource('/variants',VariantController::class);
+// Route::get('/fetch-variant-detail/{slug}',[VariantController::class, 'showDetails']);
+Route::get('/variants/get-by-slug/{variant:slug}', [VariantController::class, 'getBySlug']);
 Route::get('/get-colors',[ColorsController::class, 'getAllColors']);
 Route::get('/get-trims',[TrimsController::class, 'getAllTrims']);
 Route::apiResource('/variants',VariantController::class);

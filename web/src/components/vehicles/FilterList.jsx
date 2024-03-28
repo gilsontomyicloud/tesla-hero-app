@@ -7,13 +7,11 @@ import Pagination from './Pagination';
 
 import { Fragment  } from "react";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon, MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { useStateContext } from "../../contexts/ContextProvider";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+
 
 const FilterList = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -30,7 +28,7 @@ const FilterList = () => {
   const [loading, setLoading] = useState(false);
   const { vehicleModels } = useStateContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(2);
+  const [recordsPerPage] = useState(6);
 
 
   /* Get list of all vehicle variants available */
@@ -204,6 +202,20 @@ const FilterList = () => {
 
                   {/* Filters */}
                   <form className="mt-4 border-t border-gray-200">
+                    <div className="mt-4 p-4 md:block max-w-md mx-auto md shadow-sm">
+                      <div className="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
+                        <div className="grid place-items-center h-full w-12 text-gray-300">
+                          <MagnifyingGlassIcon className="h-6 w-6" />
+                        </div>
+
+                        <input
+                          className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
+                          type="text"
+                          id="search"
+                          placeholder="Search vehicles.."
+                        />
+                      </div>
+                    </div>
                     <h3 className="sr-only">Models</h3>
                     <Disclosure
                       as="div"
@@ -423,6 +435,20 @@ const FilterList = () => {
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
               <form className="hidden lg:block">
+                <div className="hidden md:block max-w-md mx-auto md shadow-lg">
+                  <div className="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
+                    <div className="grid place-items-center h-full w-12 text-gray-300">
+                      <MagnifyingGlassIcon className="h-6 w-6" />
+                    </div>
+
+                    <input
+                      className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
+                      type="text"
+                      id="search"
+                      placeholder="Search vehicles.."
+                    />
+                  </div>
+                </div>
                 <Disclosure as="div" className="border-b border-gray-200 py-6">
                   {({ open }) => (
                     <>

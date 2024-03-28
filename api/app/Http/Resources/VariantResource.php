@@ -39,10 +39,24 @@ class VariantResource extends JsonResource
             ],
             'relationships' => [
                 'user' => [
-                    'user_id' => $this->user->id,
-                    'user_name' => $this->user->name,
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
                 ],
-                'images' =>[]
+                'images' =>[],
+                'vehicle' => [
+                    'id' => $this->vehicle->id,
+                    'name' => $this->vehicle->name
+                ],
+                'trim' => [
+                    'id' => $this->trim->id,
+                    'name' => $this->trim->name
+                ],
+                'color' => [
+                    'id' => $this->trim->id,
+                    'name' => $this->trim->name,
+                    'code' => $this->trim->color_code,
+
+                ]
             ]
         ];
     }

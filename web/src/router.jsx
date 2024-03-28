@@ -15,10 +15,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/vehicles",
+        exact: true,
         element: <Vehicles />,
       },
       {
-        path: "/vehicles/:id",
+        path: "/vehicles/:urlSlug",
         element: <VehiclesDetails />,
       },
     ],

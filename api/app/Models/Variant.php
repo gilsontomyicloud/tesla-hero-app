@@ -27,8 +27,13 @@ class Variant extends Model
         return $this->belongsTo(Trim::class);
     }
 
-    public function color()
+    public function vehicleColor()
     {
         return $this->belongsTo(Color::class);
+    }
+
+    public function variantGallery()
+    {
+        return $this->hasMany(VariantImage::class);
     }
 }

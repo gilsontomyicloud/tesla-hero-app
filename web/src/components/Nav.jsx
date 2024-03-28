@@ -1,11 +1,17 @@
 import { Fragment, useEffect } from 'react';
-import { NavLink } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 import { headerLogo } from "../assets/images";
 import { Disclosure, Popover, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from '../axios-client';
+import { facebook, instagram, twitter } from "../assets/icons";
+const socialMedia = [
+  { src: facebook, alt: "facebook logo" },
+  { src: twitter, alt: "twitter logo" },
+  { src: instagram, alt: "instagram logo" },
+];
 
 
 const navigation = [
@@ -57,11 +63,13 @@ const Nav = () => {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="h-5 w-auto"
-                    src={headerLogo}
-                    alt="Your Company"
-                  />
+                  <a href="/">
+                    <img
+                      className="h-5 w-auto"
+                      src={headerLogo}
+                      alt="Your Company"
+                    />
+                  </a>
                 </div>
                 <div className="hidden sm:ml-20 sm:block">
                   <div className="flex space-x-6">
@@ -115,7 +123,7 @@ const Nav = () => {
                               </div>
                               <div>
                                 <a
-                                  href={`/vehicles?slug=${item.attributes.slug}`}
+                                  href={`/vehicles`}
                                   className="font-semibold text-gray-300"
                                 >
                                   {item.attributes.name}
@@ -141,20 +149,14 @@ const Nav = () => {
                   </Transition>
                 </Popover>
               </div>
-              <div className="hidden md:block max-w-md mx-auto md">
-                <div className="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
-                  <div className="grid place-items-center h-full w-12 text-gray-300">
-                    <MagnifyingGlassIcon className="h-6 w-6" />
-                  </div>
-
-                  <input
-                    className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
-                    type="text"
-                    id="search"
-                    placeholder="Search vehicles.."
-                  />
+              {socialMedia.map((icon, index) => (
+                <div
+                  className="flex justify-center items-center w-12 h-12 bg-white rounded-full hover:bg-tesla-blue"
+                  key={index}
+                >
+                  <img src={icon.src} alt={icon.alt} width={20} height={20} />
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 

@@ -1,5 +1,6 @@
 import BannerHero from "../components/home/BannerHero";
 import Features from "../components/home/Features";
+import VehicleDesciption from "../components/home/VehicleDescription";
 
 const Home = () => {
   return (
@@ -9,6 +10,10 @@ const Home = () => {
       </section>
       <section className="wide:padding-r">
         <Features />
+      </section>
+
+      <section className="wide:padding-r">
+        <VehicleDesciption />
       </section>
     </>
   );

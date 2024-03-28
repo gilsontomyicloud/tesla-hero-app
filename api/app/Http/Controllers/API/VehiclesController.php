@@ -28,46 +28,6 @@ class VehiclesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function storeVariant(StoreVehicleVariantRequest $request)
-    {
-        $data = $request->validated();
-
-        $newFileName = null;
-        // Check if image was given and save on local file system
-        if (isset($data['image'])) {
-            // Generate a unique name for the file
-            $fileName = Carbon::now()->format('YmdHis').Str::random(5) . '.' . $data['image']->getClientOriginalExtension();
-            // Store the file in the 'public' disk
-            Storage::disk('public')->putFileAs('variants', $data['image'], $fileName);
-            $newFileName = $fileName;
-        }
-
-        $variant = Variant::create([
-            'vehicle_id' => $data['vehicle'] ? $data['vehicle'] : 1,
-            'color_id' => $data['color'] ? $data['color'] : 1,
-            'trim_id' => $data['trim'] ? $data['vehicle'] : 1,
-            'user_id' => Auth::user()->id,
-            'name' => $data['name'] ? $data['name'] : null,
-            'slug' => $data['name'] ? Str::slug($data['name']).'-'. Carbon::now()->format('YmdHis') : null,
-            'description' => $data['description'] ? $data['description'] : null,
-            'warranty_details' => $data['warranty_details'] ? $data['warranty_details'] : null,
-            'price' => $data['price'] ? $data['price'] : 1,
-            'range' => $data['range'] ? $data['range'] : null,
-            'top_speed' => $data['top_speed'] ? $data['top_speed'] : null,
-            'acceleration' => $data['acceleration'] ? $data['acceleration'] : 1,
-            'wheel_size' => $data['wheel_size'] ? $data['wheel_size'] : 18,
-            'wheel_type' => $data['wheel_type'] ? $data['wheel_type'] : 1,
-            'seat_capacity' => $data['seat_capacity'] ? $data['seat_capacity'] : 5,
-            'status' => 1,
-            'image' => $data['image'] ? $newFileName : 5,
-        ]);
-
-        return new VariantResource($variant);
-    }
-
-    /**
      * Display a listing of the resource.
      */
     public function fetchAllColors()
