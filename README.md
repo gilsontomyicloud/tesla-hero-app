@@ -31,7 +31,13 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<img width="1511" alt="image" src="https://github.com/gilsontomyicloud/tesla-hero-app/assets/97668108/6a8fab03-2350-48a6-a262-ba1e7287c417">
+
+<img width="1511" alt="image" src="https://github.com/gilsontomyicloud/tesla-hero-app/assets/97668108/6c73a7a5-a0ae-4008-9ab4-21fd559a37da">
+
+
+
+
 
 A Laravel - React Full Stack Development project with Tailwind CSS support for UI
 
