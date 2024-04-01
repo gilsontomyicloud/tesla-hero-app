@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,10 +17,12 @@ class VariantResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'search_keywords' => $this->name,
             'attributes' => [
                 'name' => $this->name,
                 'vehicle_id' => $this->vehicle_id,
                 'color_id' => $this->color_id,
+                'color_code' => Color::find($this->color_id) ? Color::find($this->color_id)->color_code : null,
                 'trim_id' => $this->trim_id,
                 'slug' => $this->slug,
                 'description' => $this->description,
@@ -42,7 +45,6 @@ class VariantResource extends JsonResource
                     'id' => $this->user->id,
                     'name' => $this->user->name,
                 ],
-                'images' =>[],
                 'vehicle' => [
                     'id' => $this->vehicle->id,
                     'name' => $this->vehicle->name
@@ -51,12 +53,6 @@ class VariantResource extends JsonResource
                     'id' => $this->trim->id,
                     'name' => $this->trim->name
                 ],
-                'color' => [
-                    'id' => $this->trim->id,
-                    'name' => $this->trim->name,
-                    'code' => $this->trim->color_code,
-
-                ]
             ]
         ];
     }

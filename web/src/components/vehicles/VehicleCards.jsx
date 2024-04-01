@@ -26,8 +26,22 @@ const VehicleCards = ({ variants }) => {
             <h3 className="mt-4 text-sm text-gray-700">
               {variant.attributes.name}
             </h3>
+            <span
+              style={{
+                background: `${variant.attributes.color_code}`,
+                "border-radius": "50%",
+                width: "20px",
+                height: "20px",
+                display: "inline-block",
+                marginRight: "8px",
+                float: "right",
+              }}
+            ></span>
             <p className="mt-1 text-lg font-medium text-gray-900">
               {`$ ${variant.attributes.price}`}
+            </p>
+            <p className="text-[12px] inline-block font-montserrat text-white mt-1 rounded-sm border-0 p-1 bg-tesla-red">
+              {variant.relationships.vehicle.name}
             </p>
           </a>
         ))}

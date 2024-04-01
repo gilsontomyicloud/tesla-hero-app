@@ -24,8 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/vehciles/variants/create', [VariantController::class, 'storeVariant']);
-    Route::post('/vehciles/variants/images/create', [VariantController::class, 'storeVariantImages']);
+    Route::post('/vehicles/variants/create', [VariantController::class, 'storeVariant']);
+    Route::post('/vehicles/store', [VehiclesController::class, 'storeVehicle']);
+    Route::post('/vehicles/variants/images/create', [VariantController::class, 'storeVariantImages']);
 });
 
 /* API routes which are accessible to public */

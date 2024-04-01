@@ -28,7 +28,7 @@ const FilterList = () => {
   const [loading, setLoading] = useState(false);
   const { vehicleModels } = useStateContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(6);
+  const [recordsPerPage] = useState(4);
 
 
   /* Get list of all vehicle variants available */
@@ -153,6 +153,13 @@ const FilterList = () => {
 
   const slug = queryParameters.get("slug") ? queryParameters.get("slug") : "";
 
+  const handleSearchFilter = (e) => {
+    if (!e.target.value) return setFilteredVariants(variants);    
+    const resultsArray = filteredVariants.filter((vehicles) =>
+      vehicles.search_keywords.toString().toLowerCase().includes(e.target.value)
+    );
+    setFilteredVariants(resultsArray);
+  }
   return (
     <div className="bg-white">
       <div>
@@ -445,6 +452,7 @@ const FilterList = () => {
                       className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
                       type="text"
                       id="search"
+                      onChange={handleSearchFilter}
                       placeholder="Search vehicles.."
                     />
                   </div>

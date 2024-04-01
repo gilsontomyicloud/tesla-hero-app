@@ -42,7 +42,7 @@ const Pagination = ({ nPages, currentPage, setCurrentPage }) => {
             aria-label="Pagination"
           >
             {/* Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" */}
-            {pageNumbers.map((pgNumber) => (
+            {pageNumbers.length>1 && pageNumbers.map((pgNumber) => (
               <a
                 href="#"
                 onClick={() => setCurrentPage(pgNumber)}
