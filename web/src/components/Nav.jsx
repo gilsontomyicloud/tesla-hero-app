@@ -13,7 +13,7 @@ const socialMedia = [
   { src: instagram, alt: "instagram logo" },
 ];
 
-
+import { featureImg } from "../assets/images";
 const navigation = [
   { name: "Home", to: "/", current: true },
 ];
@@ -112,14 +112,24 @@ const Nav = () => {
                               className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
                             >
                               <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                                <img
-                                  src={
-                                    import.meta.env.VITE_API_MODEL_IMAGE_PATH +
-                                    item.attributes.thumbImage
-                                  }
-                                  className="h-8 w-8"
-                                  alt={item.attributes.name}
-                                />
+                                {!item.attributes.thumbImage && (
+                                  <img
+                                    src={featureImg}
+                                    className="h-8 w-8"
+                                    alt="Tesla"
+                                  />
+                                )}
+                                {item.attributes.thumbImage && (
+                                  <img
+                                    src={
+                                      import.meta.env
+                                        .VITE_API_MODEL_IMAGE_PATH +
+                                      item.attributes.thumbImage
+                                    }
+                                    className="h-8 w-8"
+                                    alt={item.attributes.name}
+                                  />
+                                )}
                               </div>
                               <div>
                                 <a
@@ -200,18 +210,27 @@ const Nav = () => {
                           className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
                         >
                           <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                            <img
-                              src={
-                                import.meta.env.VITE_API_MODEL_IMAGE_PATH +
-                                item.attributes.thumbImage
-                              }
-                              className="h-8 w-8"
-                              alt={item.attributes.name}
-                            />
+                            {!item.attributes.thumbImage && (
+                              <img
+                                src={featureImg}
+                                className="h-8 w-8"
+                                alt="Tesla"
+                              />
+                            )}
+                            {item.attributes.thumbImage && (
+                              <img
+                                src={
+                                  import.meta.env.VITE_API_MODEL_IMAGE_PATH +
+                                  item.attributes.thumbImage
+                                }
+                                className="h-8 w-8"
+                                alt={item.attributes.name}
+                              />
+                            )}
                           </div>
                           <div>
                             <a
-                              href={`/vehicles?slug=${item.attributes.slug}`}
+                              href={`/vehicles`}
                               className="font-semibold text-gray-300"
                             >
                               {item.attributes.name}
