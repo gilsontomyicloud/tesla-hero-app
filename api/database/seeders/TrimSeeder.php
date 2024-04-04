@@ -43,41 +43,7 @@ class TrimSeeder extends Seeder
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
-            [
-                'vehicle_id' => 3,
-                'name' => 'Model X Plaid',
-                'status' => 1,
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'vehicle_id' => 3,
-                'name' => 'Model X',
-                'status' => 1,
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'vehicle_id' => 4,
-                'name' => 'Performance All-Wheel Drive',
-                'status' => 1,
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'vehicle_id' => 4,
-                'name' => 'Long Range All-Wheel Drive',
-                'status' => 1,
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'vehicle_id' => 4,
-                'name' => 'Model Y Rear-Wheel Drive',
-                'status' => 1,
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+            
         ]);
     }
 }
