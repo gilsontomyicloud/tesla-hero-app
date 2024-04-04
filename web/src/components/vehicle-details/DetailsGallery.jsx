@@ -5,9 +5,9 @@ const DetailsGallery = ({ vehicleData }) => {
   return (
     <div
       id="home"
-      className="w-full flex flex-col justify-center gap-10 max-container xl:flex-row"
+      className="w-full flex flex-col justify-center gap-32 max-container xl:flex-row"
     >
-      <div className="relative flex flex-col justify-center items-start pt-18 w-full max-xl:padding-x xl:w-2/5">
+      <div className="relative flex flex-col justify-center items-start pt-18 w-full max-xl:padding-x xl:w-4/5">
         <p className="text-xl font-montserrat text-white rounded-sm border-2 p-2 bg-tesla-red">
           {vehicleData.vehicle_name}
         </p>
